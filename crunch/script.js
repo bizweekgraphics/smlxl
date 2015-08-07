@@ -1,4 +1,4 @@
-var grafs = d3.selectAll("p").each(function(d,i) {
+var grafs = d3.selectAll("p, h1, h3").each(function(d,i) {
   d3.select(this).datum({"offsetTop": this.offsetTop});
 })
 
