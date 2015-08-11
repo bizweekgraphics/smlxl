@@ -26,14 +26,14 @@ d3.timer(function(t) {
   }
 
   for (var i = hedArray.length - 1; i >= 0; i--) {
-    ctx.globalAlpha = Math.max(0, 1 - (scrollTop/100 - i/2));
+    ctx.globalAlpha = Math.min(1, Math.max(0, 1 - (scrollTop/200 - i)));
 
-    ctx.font = "bold "+Math.floor((100/(10*i+1)) + scrollTop)+"px sans-serif";
+    ctx.font = "bold "+Math.floor((scrollTop*2/(i*i+1)))+"px sans-serif";
 
-    ctx.fillStyle = i%2 == 0 ? "#000000" : "#ffffff";
+    ctx.fillStyle = i%1 == 0 ? "#000000" : "#ffffff";
     ctx.fillText(hedArray[i], innerWidth/2, innerHeight/2);
 
-    ctx.strokeStyle = i%2 == 1 ? "#000000" : "#ffffff";
+    ctx.strokeStyle = i%1 == 1 ? "#000000" : "#ffffff";
     ctx.strokeText(hedArray[i], innerWidth/2, innerHeight/2);
   };
   ctx.globalAlpha = 1;
