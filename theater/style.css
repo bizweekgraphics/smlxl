@@ -1,0 +1,9 @@
+.mouseghost {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 5px;
+  background: red;
+  z-index: 2;
+  pointer-events: none;
+}
