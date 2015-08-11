@@ -1,5 +1,5 @@
 body {
-  color: red;
+  font-family: sans-serif;
 }
 
 canvas {
@@ -16,5 +16,7 @@ header {
 }
 
 article {
+  margin: 0 auto;
   margin-top: 100%;
+  width: 1024px;
 }

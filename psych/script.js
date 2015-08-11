@@ -5,11 +5,17 @@ var canvas = body.append("canvas")
     .attr("height", innerHeight);
 
 var ctx = canvas.node().getContext("2d");
+ctx.textBaseline = 'middle';
+ctx.textAlign = "center";
 
-var hed = d3.select("h1").text();
+var hed = d3.select("h1").text(),
+    hedArray = hed.split(" ");
 
 d3.timer(function(t) {
-  body.style("-webkit-filter", "hue-rotate("+(Math.floor(body.node().scrollTop / 10) % 360)+"deg)");
+
+  var scrollTop = body.node().scrollTop;
+
+  // body.style("-webkit-filter", "hue-rotate("+(Math.floor(body.node().scrollTop / 10) % 360)+"deg)");
 
   for (var i = 0 ; i < 10; i++) {
     ctx.fillStyle = i%2 == 0 ? "#000000" : "#ffffff";
@@ -17,8 +23,19 @@ d3.timer(function(t) {
     ctx.beginPath();
     ctx.arc(innerWidth/2, innerHeight/2, (20*(10-i)) + 200*(Math.sin(i*t/5000)+1), 0, 2 * Math.PI, false);
     ctx.fill();
-
   }
 
+  for (var i = hedArray.length - 1; i >= 0; i--) {
+    ctx.globalAlpha = Math.max(0, 1 - (scrollTop/100 - i/2));
+
+    ctx.font = "bold "+Math.floor((100/(10*i+1)) + scrollTop)+"px sans-serif";
+
+    ctx.fillStyle = i%2 == 0 ? "#000000" : "#ffffff";
+    ctx.fillText(hedArray[i], innerWidth/2, innerHeight/2);
+
+    ctx.strokeStyle = i%2 == 1 ? "#000000" : "#ffffff";
+    ctx.strokeText(hedArray[i], innerWidth/2, innerHeight/2);
+  };
+  ctx.globalAlpha = 1;
 
 });
