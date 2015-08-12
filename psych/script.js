@@ -7,21 +7,29 @@ var canvas = body.append("canvas")
 var ctx = canvas.node().getContext("2d");
 ctx.textBaseline = 'middle';
 ctx.textAlign = "center";
+ctx.globalCompositeOperation = "xor";
 
 var hed = d3.select("h1").text(),
     hedArray = hed.split(" ");
 
 d3.timer(function(t) {
 
+  ctx.clearRect(0,0,canvas.node().width, canvas.node().height);
+
   var scrollTop = body.node().scrollTop;
 
-  var circles = d3.range(100).map(function(i) { return (10*(100-i) + t/10000) % 1000; }).sort(d3.descending);
+  var circles = d3.range(100).map(function(i) { return (10*(100-i) + 5*Math.sin(t/500 + 5*i)); }).sort(d3.descending);
   circles.forEach(function(d, i) {
-    ctx.fillStyle = d3.rgb("hsl(0,0%,"+Math.floor(.5*(Math.sin(d*t/10000) + 1)*100)+"%)").toString();
+    ctx.fillStyle = "#000000";
     ctx.beginPath();
     ctx.arc(innerWidth/2, innerHeight/2, d, 0, 2 * Math.PI, false);
     ctx.fill();
   })
+
+  drawEqTriangle(ctx, 100*Math.tan(t/1000), canvas.node().width/2, canvas.node().height/2);
+  drawEqTriangle(ctx, 100*Math.sin(t/1000), canvas.node().width/2, canvas.node().height/2);
+  drawEqTriangle(ctx, 100*Math.cos(t/1000), canvas.node().width/2, canvas.node().height/2);
+  // drawEqTriangle(ctx, -50*Math.tan(t/500), canvas.node().width/2, canvas.node().height/2);
 
   for (var i = hedArray.length - 1; i >= 0; i--) {
     ctx.globalAlpha = Math.min(1, Math.max(0, 1 - (scrollTop/200 - i)));
@@ -47,4 +55,29 @@ d3.select(window).on("scroll", function() {
 
 function cycleRadius(t,i) {
   return (20*(10-i)) + 200*(Math.sin(i*t/5000)+1);
+}
+
+function drawEqTriangle(ctx, side, cx, cy){
+    
+    var h = side * (Math.sqrt(3)/2);
+        
+    // ctx.strokeStyle = "#ff0000";
+    
+    ctx.save();
+    ctx.translate(cx, cy);
+  
+    ctx.beginPath();
+        
+        ctx.moveTo(0, -h / 2);
+        ctx.lineTo( -side / 2, h / 2);
+        ctx.lineTo(side / 2, h / 2);
+        ctx.lineTo(0, -h / 2);
+        
+        // ctx.stroke();
+        ctx.fill(); 
+        
+    ctx.closePath();
+    ctx.translate(-cx, -cy);
+    ctx.save();
+
 }
