@@ -5,6 +5,7 @@ var canvas = body.append("canvas")
     .attr("height", innerHeight);
 
 var ctx = canvas.node().getContext("2d");
+ctx.fillStyle = "#000000";
 ctx.textBaseline = 'middle';
 ctx.textAlign = "center";
 ctx.globalCompositeOperation = "xor";
@@ -20,15 +21,24 @@ d3.timer(function(t) {
 
   var circles = d3.range(100).map(function(i) { return (10*(100-i) + 5*Math.sin(t/500 + 5*i)); }).sort(d3.descending);
   circles.forEach(function(d, i) {
-    ctx.fillStyle = "#000000";
     ctx.beginPath();
     ctx.arc(innerWidth/2, innerHeight/2, d, 0, 2 * Math.PI, false);
     ctx.fill();
   })
 
-  drawEqTriangle(ctx, 100*Math.tan(t/1000), canvas.node().width/2, canvas.node().height/2);
-  drawEqTriangle(ctx, 100*Math.sin(t/1000), canvas.node().width/2, canvas.node().height/2);
-  drawEqTriangle(ctx, 100*Math.cos(t/1000), canvas.node().width/2, canvas.node().height/2);
+  for (var i = 0; i < 6; i++) {
+    var theta = i * 2 * Math.PI / 6; 
+    drawEqTriangle(ctx, 20*Math.sin(t/1000 + theta*2) + 50, canvas.node().width/2 + 100*Math.sin(t/1000 + theta), canvas.node().height/2 + 100*Math.cos(t/1000 + theta));
+  }
+
+  for (var i = 0; i < 6; i++) {
+    var theta = i * 2 * Math.PI / 6; 
+    drawEqTriangle(ctx, 20*Math.sin(t/1000 + theta*2) + 50, canvas.node().width/2 + 300*Math.sin(-t/4000 + theta), canvas.node().height/2 + 300*Math.cos(-t/4000 + theta));
+  }
+
+  // drawEqTriangle(ctx, 100*Math.tan(t/1000), canvas.node().width/2, canvas.node().height/2);
+  // drawEqTriangle(ctx, 100*Math.sin(t/1000), canvas.node().width/2, canvas.node().height/2);
+  // drawEqTriangle(ctx, 100*Math.cos(t/1000), canvas.node().width/2, canvas.node().height/2);
   // drawEqTriangle(ctx, -50*Math.tan(t/500), canvas.node().width/2, canvas.node().height/2);
 
   for (var i = hedArray.length - 1; i >= 0; i--) {
@@ -57,6 +67,7 @@ function cycleRadius(t,i) {
   return (20*(10-i)) + 200*(Math.sin(i*t/5000)+1);
 }
 
+// http://stackoverflow.com/a/8937497/120290 :)
 function drawEqTriangle(ctx, side, cx, cy){
     
     var h = side * (Math.sqrt(3)/2);
