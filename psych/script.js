@@ -19,20 +19,12 @@ d3.timer(function(t) {
 
   var scrollTop = body.node().scrollTop;
 
-  var circles = d3.range(100).map(function(i) { return (10*(100-i) + 5*Math.sin(t/500 + 5*i)); }).sort(d3.descending);
+  var circles = d3.range(100).map(function(i) { return (10*(100-i) + 5*Math.sin(t/500 + (t/10000)*i)); }).sort(d3.descending);
   circles.forEach(function(d, i) {
     ctx.beginPath();
     ctx.arc(innerWidth/2, innerHeight/2, d, 0, 2 * Math.PI, false);
     ctx.fill();
   })
-
-
-  drawEqTriangleRing(t, ctx, 100, 6, 1);
-  drawEqTriangleRing(t, ctx, 200, 8, -1);
-  drawEqTriangleRing(t, ctx, 300, 10, 1);
-  drawEqTriangleRing(t, ctx, 400, 12, -1);
-  drawEqTriangleRing(t, ctx, 500, 14, 1);
-
 
   for (var i = hedArray.length - 1; i >= 0; i--) {
     ctx.globalAlpha = Math.min(1, Math.max(0, 1 - (scrollTop/200 - i)));
