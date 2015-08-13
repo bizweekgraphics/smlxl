@@ -10,34 +10,35 @@ ctx.textBaseline = 'middle';
 ctx.textAlign = "center";
 ctx.globalCompositeOperation = "xor";
 
-var hed = d3.select("h1").text(),
-    hedArray = hed.split(" ");
+var hed = d3.select("h1").text();
 
 d3.timer(function(t) {
 
   ctx.clearRect(0,0,canvas.node().width, canvas.node().height);
 
-  var scrollTop = body.node().scrollTop;
+  d3.range(20).map(function(i) {
+    var baseBandWidth = canvas.node().width / 39;
+    var offset = 2*baseBandWidth * i;
+    var bandWidth = baseBandWidth * (0.5*Math.sin((i-10)*t/10000)+1);
+    ctx.fillRect(offset, 0, bandWidth, canvas.node().height);
+  })
+  d3.range(20).map(function(i) {
+    var baseBandWidth = canvas.node().width / 39;
+    var offset = 2*baseBandWidth * i;
+    var bandWidth = baseBandWidth * (0.5*Math.sin((i-10)*t/10000)+1);
+    ctx.fillRect(0, offset, canvas.node().width, bandWidth);
+  })
 
-  var circles = d3.range(100).map(function(i) { return (10*(100-i) + 5*Math.sin(t/500 + (t/10000)*i)); }).sort(d3.descending);
+  var circles = d3.range(50).map(function(i) { return (10*(50-i) + 5*Math.sin(t/500 + (t/10000)*i)); }).sort(d3.descending);
+  ctx.globalCompositeOperation = "source-over";
   circles.forEach(function(d, i) {
     ctx.beginPath();
     ctx.arc(innerWidth/2, innerHeight/2, d, 0, 2 * Math.PI, false);
     ctx.fill();
+    ctx.globalCompositeOperation = "xor";
   })
 
-  for (var i = hedArray.length - 1; i >= 0; i--) {
-    ctx.globalAlpha = Math.min(1, Math.max(0, 1 - (scrollTop/200 - i)));
-
-    ctx.font = "bold "+Math.floor((scrollTop*2/(i*i+1)))+"px sans-serif";
-
-    ctx.fillStyle = i%1 == 0 ? "#000000" : "#ffffff";
-    ctx.fillText(hedArray[i], innerWidth/2, innerHeight/2);
-
-    ctx.strokeStyle = i%1 == 1 ? "#000000" : "#ffffff";
-    ctx.strokeText(hedArray[i], innerWidth/2, innerHeight/2);
-  };
-  ctx.globalAlpha = 1;
+  drawZoomingText(t, ctx, "Ketamine", 100);
 
 });
 
@@ -92,4 +93,20 @@ function drawEqTriangleRing(t, ctx, radius, number, direction) {
         canvas.node().height/2 + radius*Math.cos(direction*t/1000 + theta)
       );
   }
+}
+
+function drawZoomingText(t, ctx, text, scrub) {
+  textArray = text.split(" ");
+  for (var i = textArray.length - 1; i >= 0; i--) {
+    // ctx.globalAlpha = Math.min(1, Math.max(0, 1 - (scrub/200 - i)));
+
+    ctx.font = "bold "+Math.floor((scrub*2/(i*i+1)))+"px sans-serif";
+
+    ctx.fillStyle = i%1 == 0 ? "#000000" : "#ffffff";
+    ctx.fillText(textArray[i], innerWidth/2, innerHeight/2);
+
+    // ctx.strokeStyle = i%1 == 1 ? "#000000" : "#ffffff";
+    // ctx.strokeText(textArray[i], innerWidth/2, innerHeight/2);
+  };
+  // ctx.globalAlpha = 1;
 }
