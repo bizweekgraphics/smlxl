@@ -26,20 +26,13 @@ d3.timer(function(t) {
     ctx.fill();
   })
 
-  for (var i = 0; i < 6; i++) {
-    var theta = i * 2 * Math.PI / 6; 
-    drawEqTriangle(ctx, 20*Math.sin(t/1000 + theta*2) + 50, canvas.node().width/2 + 100*Math.sin(t/1000 + theta), canvas.node().height/2 + 100*Math.cos(t/1000 + theta));
-  }
 
-  for (var i = 0; i < 6; i++) {
-    var theta = i * 2 * Math.PI / 6; 
-    drawEqTriangle(ctx, 20*Math.sin(t/1000 + theta*2) + 50, canvas.node().width/2 + 300*Math.sin(-t/4000 + theta), canvas.node().height/2 + 300*Math.cos(-t/4000 + theta));
-  }
+  drawEqTriangleRing(t, ctx, 100, 6, 1);
+  drawEqTriangleRing(t, ctx, 200, 8, -1);
+  drawEqTriangleRing(t, ctx, 300, 10, 1);
+  drawEqTriangleRing(t, ctx, 400, 12, -1);
+  drawEqTriangleRing(t, ctx, 500, 14, 1);
 
-  // drawEqTriangle(ctx, 100*Math.tan(t/1000), canvas.node().width/2, canvas.node().height/2);
-  // drawEqTriangle(ctx, 100*Math.sin(t/1000), canvas.node().width/2, canvas.node().height/2);
-  // drawEqTriangle(ctx, 100*Math.cos(t/1000), canvas.node().width/2, canvas.node().height/2);
-  // drawEqTriangle(ctx, -50*Math.tan(t/500), canvas.node().width/2, canvas.node().height/2);
 
   for (var i = hedArray.length - 1; i >= 0; i--) {
     ctx.globalAlpha = Math.min(1, Math.max(0, 1 - (scrollTop/200 - i)));
@@ -67,28 +60,44 @@ function cycleRadius(t,i) {
   return (20*(10-i)) + 200*(Math.sin(i*t/5000)+1);
 }
 
+function pulsingConcentric(t,i) {
+  return d3.range(100).map(function(i) { return (10*(100-i) + 5*Math.sin(t/500 + 5*i)); }).sort(d3.descending);
+}
+
 // http://stackoverflow.com/a/8937497/120290 :)
 function drawEqTriangle(ctx, side, cx, cy){
     
-    var h = side * (Math.sqrt(3)/2);
-        
-    // ctx.strokeStyle = "#ff0000";
-    
-    ctx.save();
-    ctx.translate(cx, cy);
-  
-    ctx.beginPath();
-        
-        ctx.moveTo(0, -h / 2);
-        ctx.lineTo( -side / 2, h / 2);
-        ctx.lineTo(side / 2, h / 2);
-        ctx.lineTo(0, -h / 2);
-        
-        // ctx.stroke();
-        ctx.fill(); 
-        
-    ctx.closePath();
-    ctx.translate(-cx, -cy);
-    ctx.save();
+  var h = side * (Math.sqrt(3)/2);
 
+  // ctx.strokeStyle = "#ff0000";
+
+  ctx.save();
+  ctx.translate(cx, cy);
+
+  ctx.beginPath();
+
+    ctx.moveTo(0, -h / 2);
+    ctx.lineTo( -side / 2, h / 2);
+    ctx.lineTo(side / 2, h / 2);
+    ctx.lineTo(0, -h / 2);
+
+    // ctx.stroke();
+    ctx.fill(); 
+
+  ctx.closePath();
+  ctx.translate(-cx, -cy);
+  ctx.save();
+
+}
+
+function drawEqTriangleRing(t, ctx, radius, number, direction) {
+  for (var i = 0; i < number; i++) {
+    var theta = i * 2 * Math.PI / number; 
+    drawEqTriangle(
+        ctx, 
+        20*Math.sin(t/1000 + theta*2) + 50, 
+        canvas.node().width/2 + radius*Math.sin(direction*t/1000 + theta), 
+        canvas.node().height/2 + radius*Math.cos(direction*t/1000 + theta)
+      );
+  }
 }
