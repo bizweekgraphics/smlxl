@@ -27,3 +27,15 @@ article {
   background: white;
   padding: 2em 10em;
 }
+
+.heddd {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  font-size: 7em;
+  font-family: sans-serif;
+  text-align: center;
+  font-weight: bold;
+  line-height: 2.7em;
+}

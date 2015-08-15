@@ -1,4 +1,7 @@
-var body = d3.select("body");
+var body = d3.select("body"),
+    mouse = [0,0],
+    scrollTop = 0,
+    invert = false;
 
 var canvas = body.append("canvas")
     .attr("width", innerWidth)
@@ -19,17 +22,22 @@ d3.timer(function(t) {
   d3.range(20).map(function(i) {
     var baseBandWidth = canvas.node().width / 39;
     var offset = 2*baseBandWidth * i;
-    var bandWidth = baseBandWidth * (0.5*Math.sin((i-10)*t/10000)+1);
+    // var bandWidth = baseBandWidth * (0.5*Math.sin((i-10)*t/10000)+1);
+    var bandWidth = baseBandWidth * (Math.abs(offset - mouse[0])/canvas.node().width + 0.5);
     ctx.fillRect(offset, 0, bandWidth, canvas.node().height);
   })
   d3.range(20).map(function(i) {
     var baseBandWidth = canvas.node().width / 39;
     var offset = 2*baseBandWidth * i;
-    var bandWidth = baseBandWidth * (0.5*Math.sin((i-10)*t/10000)+1);
+    // var bandWidth = baseBandWidth * (0.5*Math.sin((i-10)*t/10000)+1);
+    var bandWidth = baseBandWidth * (Math.abs(offset - mouse[1])/canvas.node().height + 0.5);
     ctx.fillRect(0, offset, canvas.node().width, bandWidth);
   })
 
-  var circles = d3.range(50).map(function(i) { return (10*(50-i) + 5*Math.sin(t/500 + (t/10000)*i)); }).sort(d3.descending);
+  // timer:  Math.sin(t/500 + (t/10000)*i)
+  // scroll: Math.sin(t/500 + (scrollTop/200)*i)
+  var circles = d3.range(50).map(function(i) { return (10*(50-i) + 5*Math.sin(t/500 + (scrollTop/200)*i)); }).sort(d3.descending);
+  
   ctx.globalCompositeOperation = "source-over";
   circles.forEach(function(d, i) {
     ctx.beginPath();
@@ -38,15 +46,20 @@ d3.timer(function(t) {
     ctx.globalCompositeOperation = "xor";
   })
 
-  drawZoomingText(t, ctx, "Ketamine", 100);
+  drawZoomingText(t, ctx, "KETAMINE", 90);
 
 });
 
-var invert;
+// var invert;
 d3.select(window).on("scroll", function() {
+  scrollTop = body.node().scrollTop;
   var oldInvert = invert;
   invert = Math.floor(body.node().scrollTop / 1000) % 2 == 1;
   if(invert !== oldInvert) body.classed("invert", invert);
+})
+
+d3.select("body").on("mousemove", function() {
+  mouse = d3.mouse(this);
 })
 
 function cycleRadius(t,i) {
