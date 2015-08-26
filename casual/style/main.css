@@ -1,0 +1,10 @@
+@font-face {
+  font-family: BWCasual;
+  src: url("ETC FW15 WIP.otf") format("opentype");
+}
+
+body {
+  font-family: BWCasual;
+  padding: 2em;
+  text-align: center;
+}
