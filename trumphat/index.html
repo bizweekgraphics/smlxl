@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  text-align: center;
+}
+
+.hat {
+  background: url(trump.jpg) no-repeat;
+  background-size: contain;
+  background-position: 50% 50%; 
+  text-align: center;
+  width: 800px;
+  height: 565px;
+  position: relative;
+}
+
+.hat .text {
+  /*background: rgba(100,255,200,.5);*/
+  position: absolute;
+  top: 20%;
+  left: 45%;
+  width: 250px;
+  height: 100px;
+  transform: translate(-50%, -50%);
+  display: table;
+}
+
+.hat .text p {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.hat .text p div {
+  display: inline-block;
+}
+
+.space {
+  width: 2px;
+}
+
+.hat img {
+  height: 40px;
+}
+
+input {
+  text-transform: uppercase;
+  font-size: 1.2em;
+  font-family: Georgia;
+  font-weight: bold;
+  width: 20em;
+  margin: 1em;
+  text-align: center;
+}
+
+</style>
+<body>
+
+<div class="hat">
+  <div class="text"><p></p></div>
+</div>
+
+<input type="text" name="text" placeholder="Make America Great Again"><button>Download</button>
+
+<canvas id="canvas" style="border:2px solid black;" width="800" height="565"></canvas>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+<script>
+
+var container = d3.select(".text p"),
+    input = d3.select("input"),
+    text,
+    textHtml;
+
+input.on("keyup", function() {
+  text = this.value;
+  var textArray = text.split(" ");
+  textArray = textArray.map(function(word) { 
+
+    var wordHtml = Array.prototype.map.call(word, function(letter) {
+      if( /^[a-z0-9]+$/i.test( letter ) ) {
+        var filename = letter.toLowerCase() + ".png";
+      } else {
+        var filename = "ascii" + letter.charCodeAt() + ".png";
+      }
+      return '<img src="' + filename + '">';
+    }).join("");
+    return '<div class="word">' + wordHtml + "</div>";
+
+  })
+  textHtml = textArray.join(' <div class="space"></div> ');
+  container.html(textHtml);
+
+  
+  if(!container.select("img").empty()) {
+    var charHeight = container.select("img").style("height").replace("px", "");
+    var loop = 100;
+    while(container.node().offsetHeight > 100 && loop > 0) {
+      charHeight--;
+      loop--;
+      container.selectAll("img").style("height", charHeight+"px");
+    }
+  }
+
+  renderCanvas();
+})
+
+// https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Drawing_DOM_objects_into_a_canvas
+function renderCanvas() {
+  var canvas = document.getElementById('canvas');
+  var ctx = canvas.getContext('2d');
+
+  var data = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">' +
+             '<foreignObject width="100%" height="100%">' +
+             '<div xmlns="http://www.w3.org/1999/xhtml" style="font-size:40px">' +
+
+                // container.html() + 
+                // '<p>Hello<img src="a.png">world</p>' +
+
+                'Hello world' + 
+
+                '<img width="33" height="29" title="" alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAdCAYAAAAkXAW5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDE0IDc5LjE1Njc5NywgMjAxNC8wOC8yMC0wOTo1MzowMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6Nzg1RDA3NTY0NEQzMTFFNUJBMjBBRkY3RjZBMDZEQTYiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6Nzg1RDA3NTc0NEQzMTFFNUJBMjBBRkY3RjZBMDZEQTYiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo2NEMyQTE0MTQ0RDMxMUU1QkEyMEFGRjdGNkEwNkRBNiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo2NEMyQTE0MjQ0RDMxMUU1QkEyMEFGRjdGNkEwNkRBNiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PnqWgqoAAAahSURBVHja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" />' +
+
+             '</div>' +
+             '</foreignObject>' +
+             '</svg>';
+
+  var DOMURL = window.URL || window.webkitURL || window;
+
+  var img = new Image();
+  var svg = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+  var url = DOMURL.createObjectURL(svg);
+
+  img.onload = function () {
+    ctx.drawImage(img, 0, 0);
+    DOMURL.revokeObjectURL(url);
+  }
+
+  img.src = url;
+}
+renderCanvas();
+
+</script>
