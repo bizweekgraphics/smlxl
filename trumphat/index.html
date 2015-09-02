@@ -14,6 +14,7 @@ body {
   width: 800px;
   height: 565px;
   position: relative;
+  margin: 0 auto;
 }
 
 .hat .text {
@@ -58,13 +59,15 @@ input {
 </style>
 <body>
 
+<h1>Trump Hat Generator</h1>
+
 <div class="hat">
   <div class="text"><p></p></div>
 </div>
 
-<input type="text" name="text" placeholder="Make America Great Again"><button>Download</button>
+<input type="text" name="text" placeholder="Make America Great Again">
 
-<canvas id="canvas" style="border:2px solid black;" width="800" height="565"></canvas>
+<!-- <canvas id="canvas" style="border:2px solid black;" width="800" height="565"></canvas> -->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
@@ -106,7 +109,7 @@ input.on("keyup", function() {
     }
   }
 
-  renderCanvas();
+  // renderCanvas();
 })
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Drawing_DOM_objects_into_a_canvas
@@ -142,6 +145,6 @@ function renderCanvas() {
 
   img.src = url;
 }
-renderCanvas();
+// renderCanvas();
 
 </script>
